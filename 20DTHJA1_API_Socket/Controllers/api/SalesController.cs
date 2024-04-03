@@ -242,38 +242,38 @@ namespace _20DTHJA1_API_Socket.Controllers.api
         [HttpPost]
         [Route("update-product")]
         //string id, string name, decimal price , string url , string groupName
-        public async  Task<IActionResult> updateProductAsync(ProductModel productModel)
+        public async  Task<IActionResult> updateProductAsync( [FromForm] ProductImage p )
         {
-            Product Productt = productService.GetProductById_G(productModel.IdProduct); // Đảm bảo rằng bạn có một phương thức để lấy sản phẩm dựa trên id
+            Product Productt = productService.GetProductById_G(p.IdProduct); // Đảm bảo rằng bạn có một phương thức để lấy sản phẩm dựa trên id
             if (Productt == null)
             {
                 return NotFound(new { status = false, message = "Sản phẩm không tồn tại!! " });
             }
-            Productt.ProductName = productModel.ProductName;
-            Productt.ProductPrice = productModel.ProductPrice;
-            Productt.ProductType = productModel.ProductType;
-            Productt.ImageUrl = productModel.ImageUrl;
-            Productt.ProductQuantity = productModel.ProductQuantity;
-            Productt.ProductStatus = productModel.ProductStatus;
+            //Productt.ProductName = productModel.ProductName;
+            //Productt.ProductPrice = productModel.ProductPrice;
+            //Productt.ProductType = productModel.ProductType;
+            //Productt.ImageUrl = productModel.ImageUrl;
+            //Productt.ProductQuantity = productModel.ProductQuantity;
+            //Productt.ProductStatus = productModel.ProductStatus;
 
-            //Productt.ProductName = p.ProductName;
-            //Productt.ProductPrice = p.ProductPrice;
-            //Productt.ProductType = p.ProductType;
-            //Productt.ProductQuantity = p.ProductQuantity;
-            //Productt.ProductStatus = p.ProductStatus;
-            //if (p.Image.Length > 0)
-            //{
-            //    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", p.Image.FileName);
-            //    using (var stream = System.IO.File.Create(path))
-            //{
-                    //await p.Image.CopyToAsync(stream);
-                //}
-                //Productt.ImageUrl = "/images/" + p.Image.FileName;
-            //}
-            //else
-            //{
-               // Productt.ImageUrl = "";
-            //}
+            Productt.ProductName = p.ProductName;
+            Productt.ProductPrice = p.ProductPrice;
+            Productt.ProductType = p.ProductType;
+            Productt.ProductQuantity = p.ProductQuantity;
+            Productt.ProductStatus = p.ProductStatus;
+            if (p.Image.Length > 0)
+            {
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", p.Image.FileName);
+                using (var stream = System.IO.File.Create(path))
+            {
+                    await p.Image.CopyToAsync(stream);
+                }
+                Productt.ImageUrl = "/images/" + p.Image.FileName;
+            }
+            else
+            {
+               Productt.ImageUrl = "";
+            }
             productService.updateProduct(Productt);
             return Ok(new { status = true, message = "" });
         }
