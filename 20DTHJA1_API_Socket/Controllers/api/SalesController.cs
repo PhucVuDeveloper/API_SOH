@@ -250,7 +250,7 @@ namespace _20DTHJA1_API_Socket.Controllers.api
                 return NotFound(new { status = false, message = "Sản phẩm không tồn tại!! " });
             }
             //Productt.ProductName = productModel.ProductName;//
-            //Productt.ProductPrice = productModel.ProductPrice;
+            //Productt.ProductPrice = productModel.ProductPrice;//
             //Productt.ProductType = productModel.ProductType;
             //Productt.ImageUrl = productModel.ImageUrl;
             //Productt.ProductQuantity = productModel.ProductQuantity;
