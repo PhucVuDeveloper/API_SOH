@@ -240,22 +240,14 @@ namespace _20DTHJA1_API_Socket.Controllers.api
 
         //Product
         [HttpPost]
-        [Route("update-product")]
-        //string id, string name, decimal price , string url , string groupName
-        public async  Task<IActionResult> updateProductAsync( [FromForm] ProductImage p )
+        [Route("update-product-image")]
+        public async Task<IActionResult> UpdateWithImageAsync([FromForm] ProductImage p)
         {
             Product Productt = productService.GetProductById_G(p.IdProduct); // Đảm bảo rằng bạn có một phương thức để lấy sản phẩm dựa trên id
             if (Productt == null)
             {
                 return NotFound(new { status = false, message = "Sản phẩm không tồn tại!! " });
             }
-            //Productt.ProductName = productModel.ProductName;//
-            //Productt.ProductPrice = productModel.ProductPrice;//
-            //Productt.ProductType = productModel.ProductType;
-            //Productt.ImageUrl = productModel.ImageUrl;
-            //Productt.ProductQuantity = productModel.ProductQuantity;
-            //Productt.ProductStatus = productModel.ProductStatus;
-
             Productt.ProductName = p.ProductName;
             Productt.ProductPrice = p.ProductPrice;
             Productt.ProductType = p.ProductType;
@@ -265,14 +257,14 @@ namespace _20DTHJA1_API_Socket.Controllers.api
             {
                 var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", p.Image.FileName);
                 using (var stream = System.IO.File.Create(path))
-            {
+                {
                     await p.Image.CopyToAsync(stream);
                 }
                 Productt.ImageUrl = "/images/" + p.Image.FileName;
             }
             else
             {
-               Productt.ImageUrl = "";
+                Productt.ImageUrl = "";
             }
             productService.updateProduct(Productt);
             return Ok(new { status = true, message = "" });
@@ -292,23 +284,6 @@ namespace _20DTHJA1_API_Socket.Controllers.api
 
             productService.deleteProduct(productToDelete);
 
-            return Ok(new { status = true, message = "" });
-        }
-
-
-        [HttpPost]
-        [Route("insert-product")]
-        public IActionResult insertProductv1(ProductModel productModel)
-        {
-            Product pro = new Product();
-            pro.IdProduct = Guid.NewGuid();
-            pro.ProductName = productModel.ProductName;
-            pro.ProductPrice = productModel.ProductPrice;          
-            pro.ImageUrl = productModel.ImageUrl;
-            pro.ProductType = productModel.ProductType;
-            pro.ProductQuantity = productModel.ProductQuantity;
-            pro.ProductStatus = productModel.ProductStatus;
-            productService.insertProduct(pro);
             return Ok(new { status = true, message = "" });
         }
 
@@ -360,21 +335,33 @@ namespace _20DTHJA1_API_Socket.Controllers.api
         [HttpPost]
         [Route("update-kitchen")]
         //string id, string name, decimal price , string url , string groupName
-        public IActionResult updateKitchen(KitchenModel kitchenModel)
+        public async Task<IActionResult> UpdateKitchenAsync([FromForm] KitchenModel k)
         {
-            Kitchen kitchenn = productService.GetKitchenById_G(kitchenModel.IdKitchen); // Đảm bảo rằng bạn có một phương thức để lấy sản phẩm dựa trên id
+            Kitchen kitchenn = productService.GetKitchenById_G(k.IdKitchen); // Đảm bảo rằng bạn có một phương thức để lấy sản phẩm dựa trên id
 
 
             if (kitchenn == null)
             {
                 return NotFound(new { status = false, message = "Sản phẩm không tồn tại!! " });
             }
-            kitchenn.ProductName = kitchenModel.ProductName;
-            kitchenn.ProductPrice = kitchenModel.ProductPrice;
-            kitchenn.ImageUrl = kitchenModel.ImageUrl;
-            kitchenn.TableNum = kitchenModel.TableNum;
-            kitchenn.ProductQuantity = kitchenModel.ProductQuantity;
-            kitchenn.ProductNote = kitchenModel.ProductNote;
+            kitchenn.ProductName = k.ProductName;
+            kitchenn.ProductPrice = k.ProductPrice;
+            kitchenn.TableNum = k.TableNum;
+            kitchenn.ProductQuantity = k.ProductQuantity;
+            kitchenn.ProductNote = k.ProductNote;
+            if (k.Image.Length > 0)
+            {
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", k.Image.FileName);
+                using (var stream = System.IO.File.Create(path))
+                {
+                    await k.Image.CopyToAsync(stream);
+                }
+                kitchenn.ImageUrl = "/images/" + k.Image.FileName;
+            }
+            else
+            {
+                kitchenn.ImageUrl = "";
+            }
             productService.updateKitchen(kitchenn);
             return Ok(new { status = true, message = "" });
         }
@@ -398,17 +385,29 @@ namespace _20DTHJA1_API_Socket.Controllers.api
 
         [HttpPost]
         [Route("insert-kitchen")]
-        public IActionResult insertKitchenv1(KitchenModel kitchenModel)
+        public async Task<IActionResult> InsertKitchenAsync([FromForm] KitchenModel k)
         {
             Kitchen kitch = new Kitchen();
             kitch.IdKitchen = Guid.NewGuid();
-            kitch.ProductName = kitchenModel.ProductName;
-            kitch.ProductPrice = kitchenModel.ProductPrice;
-            kitch.ImageUrl = kitchenModel.ImageUrl;
-            kitch.CreatedNumber = kitchenModel.CreatedNumber;
-            kitch.TableNum = kitchenModel.TableNum;
-            kitch.ProductQuantity = kitchenModel.ProductQuantity;
-            kitch.ProductNote = kitchenModel.ProductNote;
+            kitch.ProductName = k.ProductName;
+            kitch.ProductPrice = k.ProductPrice;
+            kitch.CreatedNumber = k.CreatedNumber;
+            kitch.TableNum = k.TableNum;
+            kitch.ProductQuantity = k.ProductQuantity;
+            kitch.ProductNote = k.ProductNote;
+            if (k.Image.Length > 0)
+            {
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", k.Image.FileName);
+                using (var stream = System.IO.File.Create(path))
+                {
+                    await k.Image.CopyToAsync(stream);
+                }
+                kitch.ImageUrl = "/images/" + k.Image.FileName;
+            }
+            else
+            {
+                kitch.ImageUrl = "";
+            }
             productService.insertKitchen(kitch);
             return Ok(new { status = true, message = "" });
         }
@@ -501,20 +500,32 @@ namespace _20DTHJA1_API_Socket.Controllers.api
         [HttpPost]
         [Route("update-cartlist")]
         //string id, string name, decimal price , string url , string groupName
-        public IActionResult updateCartlist(CartlistModel cartlistModel)
+        public async Task<IActionResult> UpdateKitchenAsync([FromForm] CartlistModel c)
         {
-            Cartlist Cartlistt = productService.GetCartlistById_G(cartlistModel.IdCart); // Đảm bảo rằng bạn có một phương thức để lấy sản phẩm dựa trên id
+            Cartlist Cartlistt = productService.GetCartlistById_G(c.IdCart); // Đảm bảo rằng bạn có một phương thức để lấy sản phẩm dựa trên id
 
 
             if (Cartlistt == null)
             {
                 return NotFound(new { status = false, message = "Sản phẩm không tồn tại!! " });
             }
-            Cartlistt.ProductName = cartlistModel.ProductName;
-            Cartlistt.ProductPrice = cartlistModel.ProductPrice;
-            Cartlistt.ImageUrl = cartlistModel.ImageUrl;
-            Cartlistt.ProductQuantity = cartlistModel.ProductQuantity;
-            Cartlistt.TableNum = cartlistModel.TableNum;
+            Cartlistt.ProductName = c.ProductName;
+            Cartlistt.ProductPrice = c.ProductPrice;
+            Cartlistt.ProductQuantity = c.ProductQuantity;
+            Cartlistt.TableNum = c.TableNum;
+            if (c.Image.Length > 0)
+            {
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", c.Image.FileName);
+                using (var stream = System.IO.File.Create(path))
+                {
+                    await c.Image.CopyToAsync(stream);
+                }
+                Cartlistt.ImageUrl = "/images/" + c.Image.FileName;
+            }
+            else
+            {
+                Cartlistt.ImageUrl = "";
+            }
             productService.updateCartlist(Cartlistt);
             return Ok(new { status = true, message = "" });
         }
@@ -538,15 +549,27 @@ namespace _20DTHJA1_API_Socket.Controllers.api
 
         [HttpPost]
         [Route("insert-cartlist")]
-        public IActionResult insertCartlistv1(CartlistModel cartlistModel)
+        public async Task<IActionResult> InsertKitchenAsync([FromForm] CartlistModel c)
         {
             Cartlist car = new Cartlist();
             car.IdCart = Guid.NewGuid();
-            car.ProductName = cartlistModel.ProductName;
-            car.ProductPrice = cartlistModel.ProductPrice;
-            car.ImageUrl = cartlistModel.ImageUrl;
-            car.ProductQuantity = cartlistModel.ProductQuantity;
-            car.TableNum = cartlistModel.TableNum;
+            car.ProductName = c.ProductName;
+            car.ProductPrice = c.ProductPrice;
+            car.ProductQuantity = c.ProductQuantity;
+            car.TableNum = c.TableNum;
+            if (c.Image.Length > 0)
+            {
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", c.Image.FileName);
+                using (var stream = System.IO.File.Create(path))
+                {
+                    await c.Image.CopyToAsync(stream);
+                }
+                car.ImageUrl = "/images/" + c.Image.FileName;
+            }
+            else
+            {
+                car.ImageUrl = "";
+            }
             productService.insertCartlist(car);
             return Ok(new { status = true, message = "" });
         }
