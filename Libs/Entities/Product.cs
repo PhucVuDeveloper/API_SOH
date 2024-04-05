@@ -18,6 +18,6 @@ namespace Libs.Entities
         public int ProductType { get; set; } 
         public int ProductQuantity { get; set; }
         public int ProductStatus { get; set; }
-        public IFormFile Image { get; set; }
+        //public IFormFile Image { get; set; }
     }
 }
